@@ -24,7 +24,20 @@ namespace Senparc.Weixin.Exceptions
     /// </summary>
     public class ErrorJsonResultException : WeixinException
     {
+        /// <summary>
+        /// Gets or sets the json result.
+        /// </summary>
+        /// <value>
+        /// The json result.
+        /// </value>
         public WxJsonResult JsonResult { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ErrorJsonResultException"/> class.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="inner">The inner.</param>
+        /// <param name="jsonResult">The json result.</param>
         public ErrorJsonResultException(string message, Exception inner, WxJsonResult jsonResult)
             : base(message, inner)
         {

@@ -23,12 +23,12 @@ namespace Senparc.Weixin.Exceptions
     /// </summary>
     public class UnknownRequestMsgTypeException : WeixinException //ArgumentOutOfRangeException
     {
-        public UnknownRequestMsgTypeException(string message)
-            : base(message, null)
-        {
-        }
-
-        public UnknownRequestMsgTypeException(string message, Exception inner)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnknownRequestMsgTypeException"/> class.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="inner">The inner.</param>
+        public UnknownRequestMsgTypeException(string message, Exception inner = null)
             : base(message, inner)
         { }
     }

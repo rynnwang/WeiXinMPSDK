@@ -12,19 +12,29 @@
 ----------------------------------------------------------------*/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Senparc.Weixin.Exceptions
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Senparc.Weixin.Exceptions.WeixinException" />
     public class WeixinMenuException : WeixinException
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeixinMenuException"/> class.
+        /// </summary>
+        /// <param name="message">The message.</param>
         public WeixinMenuException(string message)
             : base(message, null)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeixinMenuException"/> class.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="inner">The inner.</param>
         public WeixinMenuException(string message, Exception inner)
             : base(message, inner)
         {

@@ -12,20 +12,21 @@
 ----------------------------------------------------------------*/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Senparc.Weixin.Exceptions
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Senparc.Weixin.Exceptions.WeixinException" />
     public class MessageHandlerException : WeixinException
     {
-          public MessageHandlerException(string message)
-            : base(message, null)
-        {
-        }
-
-          public MessageHandlerException(string message, Exception inner)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageHandlerException"/> class.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="inner">The inner.</param>
+        public MessageHandlerException(string message, Exception inner = null)
             : base(message, inner)
         {
         }

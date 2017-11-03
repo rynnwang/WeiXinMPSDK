@@ -1,33 +1,26 @@
-﻿/*----------------------------------------------------------------
-    Copyright (C) 2015 Senparc
-    
-    文件名：Get.cs
-    文件功能描述：Get
-    
-    
-    创建标识：Senparc - 20150211
-    
-    修改标识：Senparc - 20150303
-    修改描述：整理接口
-----------------------------------------------------------------*/
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Net;
 using System.Text;
 using System.Web.Script.Serialization;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.Exceptions;
+using Beyova;
 
 namespace Senparc.Weixin.HttpUtility
 {
     public static class Get
     {
+        /// <summary>
+        /// Gets the json.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url">The URL.</param>
+        /// <param name="encoding">The encoding.</param>
+        /// <returns></returns>
+        /// <exception cref="ErrorJsonResultException">null</exception>
         public static T GetJson<T>(string url, Encoding encoding = null)
         {
-            string returnText = HttpUtility.RequestUtility.HttpGet(url, encoding);
+            string returnText = HttpUtility.RequestUtility.HttpGet(url, encoding: encoding);
 
             JavaScriptSerializer js = new JavaScriptSerializer();
 
@@ -49,16 +42,6 @@ namespace Senparc.Weixin.HttpUtility
             T result = js.Deserialize<T>(returnText);
 
             return result;
-        }
-
-        public static void Download(string url, Stream stream)
-        {
-            WebClient wc = new WebClient();
-            var data = wc.DownloadData(url);
-            foreach (var b in data)
-            {
-                stream.WriteByte(b);
-            }
         }
     }
 }

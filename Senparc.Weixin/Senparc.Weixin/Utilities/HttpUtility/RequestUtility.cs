@@ -1,17 +1,4 @@
-﻿/*----------------------------------------------------------------
-    Copyright (C) 2015 Senparc
-    
-    文件名：RequestUtility.cs
-    文件功能描述：获取请求结果
-    
-    
-    创建标识：Senparc - 20150211
-    
-    修改标识：Senparc - 20150303
-    修改描述：整理接口
-----------------------------------------------------------------*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,91 +7,68 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Senparc.Weixin.Helpers;
+using Beyova;
 
 namespace Senparc.Weixin.HttpUtility
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class RequestUtility
     {
         #region 同步方法
 
         /// <summary>
-        /// 使用Get方法获取字符串结果（没有加入Cookie）
+        /// 使用Get方法获取字符串结果
         /// </summary>
-        /// <param name="url"></param>
+        /// <param name="url">The URL.</param>
+        /// <param name="cookieContainer">The cookie container.</param>
+        /// <param name="encoding">The encoding.</param>
+        /// <param name="timeOut">The time out.</param>
         /// <returns></returns>
-        public static string HttpGet(string url, Encoding encoding = null)
+        public static string HttpGet(string url, CookieContainer cookieContainer = null, Encoding encoding = null, int timeOut = Config.TIME_OUT)
         {
-            WebClient wc = new WebClient();
-            wc.Encoding = encoding ?? Encoding.UTF8;
-            //if (encoding != null)
-            //{
-            //    wc.Encoding = encoding;
-            //}
-            return wc.DownloadString(url);
-        }
+            url.CheckEmptyString(nameof(url));
 
-        /// <summary>
-        /// 使用Get方法获取字符串结果（加入Cookie）
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="cookieContainer"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        public static string HttpGet(string url, CookieContainer cookieContainer = null, Encoding encoding = null,int timeOut= Config.TIME_OUT)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "GET";
+            var request = url.CreateHttpWebRequest(cookieContainer: cookieContainer);
             request.Timeout = timeOut;
 
-            if (cookieContainer != null)
-            {
-                request.CookieContainer = cookieContainer;
-            }
-
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-            if (cookieContainer != null)
-            {
-                response.Cookies = cookieContainer.GetCookies(response.ResponseUri);
-            }
-
-            using (Stream responseStream = response.GetResponseStream())
-            {
-                using (StreamReader myStreamReader = new StreamReader(responseStream, encoding ?? Encoding.GetEncoding("utf-8")))
-                {
-                    string retString = myStreamReader.ReadToEnd();
-                    return retString;
-                }
-            }
+            return request.ReadResponseAsText();
         }
 
         /// <summary>
         /// 使用Post方法获取字符串结果，常规提交
         /// </summary>
         /// <returns></returns>
-        public static string HttpPost(string url, CookieContainer cookieContainer = null, Dictionary<string, string> formData = null, Encoding encoding = null,int timeOut = Config.TIME_OUT)
+        public static string HttpPost(string url, CookieContainer cookieContainer = null, Dictionary<string, string> formData = null, Encoding encoding = null, int timeOut = Config.TIME_OUT)
         {
-            string dataString = GetQueryString(formData);
-            var formDataBytes = formData == null ? new byte[0] : Encoding.UTF8.GetBytes(dataString);
-            MemoryStream ms = new MemoryStream();
-            ms.Write(formDataBytes, 0, formDataBytes.Length);
-            ms.Seek(0, SeekOrigin.Begin);//设置指针读取位置
-            return HttpPost(url, cookieContainer, ms, null, null, encoding,timeOut);
+            url.CheckEmptyString(nameof(url));
+
+            var request = url.CreateHttpWebRequest(HttpConstants.HttpMethod.Post, cookieContainer: cookieContainer);
+            request.FillData(formData, encoding);
+            return request.ReadResponseAsText();
         }
 
         /// <summary>
         /// 使用Post方法获取字符串结果
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="cookieContainer"></param>
-        /// <param name="postStream"></param>
+        /// <param name="url">The URL.</param>
+        /// <param name="cookieContainer">The cookie container.</param>
+        /// <param name="postStream">The post stream.</param>
         /// <param name="fileDictionary">需要上传的文件，Key：对应要上传的Name，Value：本地文件名</param>
-        /// <param name="timeOut"></param>
+        /// <param name="refererUrl">The referer URL.</param>
+        /// <param name="encoding">The encoding.</param>
+        /// <param name="timeOut">The time out.</param>
         /// <returns></returns>
-        public static string HttpPost(string url, CookieContainer cookieContainer = null, Stream postStream = null, Dictionary<string, string> fileDictionary = null, string refererUrl = null, Encoding encoding = null,int timeOut = Config.TIME_OUT)
+        public static string HttpPost(string url, CookieContainer cookieContainer = null, Stream postStream = null, Dictionary<string, string> fileDictionary = null, string refererUrl = null, Encoding encoding = null, int timeOut = Config.TIME_OUT)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
+            url.CheckEmptyString(nameof(url));
+            var request = url.CreateHttpWebRequest(
+                HttpConstants.HttpMethod.Post,
+                cookieContainer: cookieContainer,
+                referrer: refererUrl,
+                userAgent: "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36",
+                accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
             request.Timeout = timeOut;
 
             #region 处理Form表单文件上传
@@ -157,19 +121,7 @@ namespace Senparc.Weixin.HttpUtility
             #endregion
 
             request.ContentLength = postStream != null ? postStream.Length : 0;
-            request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
             request.KeepAlive = true;
-
-            if (!string.IsNullOrEmpty(refererUrl))
-            {
-                request.Referer = refererUrl;
-            }
-            request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36";
-
-            if (cookieContainer != null)
-            {
-                request.CookieContainer = cookieContainer;
-            }
 
             #region 输入二进制流
             if (postStream != null)
@@ -190,21 +142,7 @@ namespace Senparc.Weixin.HttpUtility
             }
             #endregion
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-            if (cookieContainer != null)
-            {
-                response.Cookies = cookieContainer.GetCookies(response.ResponseUri);
-            }
-
-            using (Stream responseStream = response.GetResponseStream())
-            {
-                using (StreamReader myStreamReader = new StreamReader(responseStream, encoding ?? Encoding.GetEncoding("utf-8")))
-                {
-                    string retString = myStreamReader.ReadToEnd();
-                    return retString;
-                }
-            }
+            return request.ReadResponseAsText(encoding);
         }
 
         #endregion

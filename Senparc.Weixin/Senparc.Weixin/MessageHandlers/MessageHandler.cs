@@ -193,8 +193,8 @@ namespace Senparc.Weixin.MessageHandlers
         /// <summary>
         /// 使用requestMessageBase的构造函数
         /// </summary>
-        /// <param name="postDataDocument"></param>
-        /// <param name="maxRecordCount"></param>
+        /// <param name="requestMessageBase">The request message base.</param>
+        /// <param name="maxRecordCount">The maximum record count.</param>
         /// <param name="postData">需要传入到Init的参数</param>
         public MessageHandler(RequestMessageBase requestMessageBase, int maxRecordCount = 0, object postData = null)
         {
@@ -212,7 +212,9 @@ namespace Senparc.Weixin.MessageHandlers
         /// 初始化，获取RequestDocument。
         /// Init中需要对上下文添加当前消息（如果使用上下文）
         /// </summary>
-        /// <param name="requestDocument"></param>
+        /// <param name="requestDocument">The request document.</param>
+        /// <param name="postData">The post data.</param>
+        /// <returns></returns>
         public abstract XDocument Init(XDocument requestDocument, object postData = null);
 
         //public abstract TR CreateResponseMessage<TR>() where TR : ResponseMessageBase;
@@ -222,10 +224,16 @@ namespace Senparc.Weixin.MessageHandlers
         /// </summary>
         public abstract void Execute();
 
+        /// <summary>
+        /// Called when [executing].
+        /// </summary>
         public virtual void OnExecuting()
         {
         }
 
+        /// <summary>
+        /// Called when [executed].
+        /// </summary>
         public virtual void OnExecuted()
         {
         }

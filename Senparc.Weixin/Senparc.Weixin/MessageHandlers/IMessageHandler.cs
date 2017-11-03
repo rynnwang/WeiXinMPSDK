@@ -20,6 +20,12 @@ using Senparc.Weixin.Entities;
 
 namespace Senparc.Weixin.MessageHandlers
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TRest">The type of the rest.</typeparam>
+    /// <typeparam name="TResp">The type of the resp.</typeparam>
+    /// <seealso cref="Senparc.Weixin.MessageHandlers.IMessageHandlerDocument" />
     public interface IMessageHandler<TRest, TResp> : IMessageHandlerDocument
         where TRest : IRequestMessageBase
         where TResp : IResponseMessageBase

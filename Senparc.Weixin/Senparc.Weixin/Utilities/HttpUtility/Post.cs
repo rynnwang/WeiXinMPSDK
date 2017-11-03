@@ -69,6 +69,8 @@ namespace Senparc.Weixin.HttpUtility
         /// <typeparam name="T">返回数据类型（Json对应的实体）</typeparam>
         /// <param name="url">请求Url</param>
         /// <param name="cookieContainer">CookieContainer，如果不需要则设为null</param>
+        /// <param name="fileDictionary">The file dictionary.</param>
+        /// <param name="encoding">The encoding.</param>
         /// <param name="timeOut">代理请求超时时间（毫秒）</param>
         /// <returns></returns>
         public static T PostFileGetJson<T>(string url, CookieContainer cookieContainer = null, Dictionary<string, string> fileDictionary = null, Encoding encoding = null, int timeOut = Config.TIME_OUT)
@@ -85,6 +87,7 @@ namespace Senparc.Weixin.HttpUtility
         /// <param name="url">请求Url</param>
         /// <param name="cookieContainer">CookieContainer，如果不需要则设为null</param>
         /// <param name="fileStream">文件流</param>
+        /// <param name="encoding">The encoding.</param>
         /// <param name="timeOut">代理请求超时时间（毫秒）</param>
         /// <returns></returns>
         public static T PostGetJson<T>(string url, CookieContainer cookieContainer = null, Stream fileStream = null, Encoding encoding = null, int timeOut = Config.TIME_OUT)
@@ -94,6 +97,16 @@ namespace Senparc.Weixin.HttpUtility
             return result;
         }
 
+        /// <summary>
+        /// Posts the get json.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url">The URL.</param>
+        /// <param name="cookieContainer">The cookie container.</param>
+        /// <param name="formData">The form data.</param>
+        /// <param name="encoding">The encoding.</param>
+        /// <param name="timeOut">The time out.</param>
+        /// <returns></returns>
         public static T PostGetJson<T>(string url, CookieContainer cookieContainer = null, Dictionary<string, string> formData = null, Encoding encoding = null, int timeOut = Config.TIME_OUT)
         {
             string returnText = HttpUtility.RequestUtility.HttpPost(url, cookieContainer, formData, encoding, timeOut: timeOut);

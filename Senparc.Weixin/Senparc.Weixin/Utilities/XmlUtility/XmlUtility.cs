@@ -9,6 +9,9 @@ using System.Xml.Serialization;
 
 namespace Senparc.Weixin.XmlUtility
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class XmlUtility
     {
 
@@ -17,7 +20,7 @@ namespace Senparc.Weixin.XmlUtility
         /// <summary>
         /// 反序列化
         /// </summary>
-        /// <param name="type">类型</param>
+        /// <typeparam name="T"></typeparam>
         /// <param name="xml">XML字符串</param>
         /// <returns></returns>
         public static object Deserialize<T>(string xml)
@@ -40,8 +43,8 @@ namespace Senparc.Weixin.XmlUtility
         /// <summary>
         /// 反序列化
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="xml"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="stream">The stream.</param>
         /// <returns></returns>
         public static object Deserialize<T>(Stream stream)
         {
@@ -62,25 +65,27 @@ namespace Senparc.Weixin.XmlUtility
         /// <returns></returns>
         public static string Serializer<T>(T obj)
         {
-            MemoryStream Stream = new MemoryStream();
-            XmlSerializer xml = new XmlSerializer(typeof(T));
-            try
+            using (MemoryStream Stream = new MemoryStream())
             {
-                //序列化对象
-                xml.Serialize(Stream, obj);
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
-            Stream.Position = 0;
-            StreamReader sr = new StreamReader(Stream);
-            string str = sr.ReadToEnd();
+                XmlSerializer xml = new XmlSerializer(typeof(T));
+                try
+                {
+                    //序列化对象
+                    xml.Serialize(Stream, obj);
+                }
+                catch (InvalidOperationException)
+                {
+                    throw;
+                }
+                Stream.Position = 0;
+                StreamReader sr = new StreamReader(Stream);
+                string str = sr.ReadToEnd();
 
-            sr.Dispose();
-            Stream.Dispose();
+                sr.Dispose();
+                Stream.Dispose();
 
-            return str;
+                return str;
+            }
         }
 
         #endregion
@@ -89,7 +94,7 @@ namespace Senparc.Weixin.XmlUtility
         /// <summary>
         /// 序列化将流转成XML字符串
         /// </summary>
-        /// <param name="stream"></param>
+        /// <param name="stream">The stream.</param>
         /// <returns></returns>
         public static XDocument Convert(Stream stream)
         {

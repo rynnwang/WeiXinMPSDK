@@ -18,8 +18,14 @@ using System.Text;
 
 namespace Senparc.Weixin.Helpers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class DateTimeHelper
     {
+        /// <summary>
+        /// The base time
+        /// </summary>
         public static DateTime BaseTime = new DateTime(1970, 1, 1);//Unix起始时间
 
         /// <summary>
